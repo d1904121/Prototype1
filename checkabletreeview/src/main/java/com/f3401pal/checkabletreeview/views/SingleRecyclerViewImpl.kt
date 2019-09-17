@@ -1,4 +1,4 @@
-package com.f3401pal.checkabletreeview
+package com.f3401pal.checkabletreeview.views
 
 import android.content.Context
 import android.util.AttributeSet
@@ -8,6 +8,11 @@ import android.view.ViewGroup
 import androidx.annotation.UiThread
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.f3401pal.checkabletreeview.R
+import com.f3401pal.checkabletreeview.models.Node
+import com.f3401pal.checkabletreeview.models.NodeTypes
+import com.f3401pal.checkabletreeview.models.ViewTreeNode
+import com.f3401pal.checkabletreeview.utils.px
 import kotlinx.android.synthetic.main.item_checkable_text.view.*
 import kotlinx.android.synthetic.main.item_checkable_text.view.expandIndicator
 import kotlinx.android.synthetic.main.item_checkable_text.view.indentation
@@ -15,11 +20,14 @@ import kotlinx.android.synthetic.main.item_quick_create_node.view.*
 import kotlinx.android.synthetic.main.item_text_only.view.*
 
 private const val TAG = "SingleRecyclerView"
-
-class SingleRecyclerViewImpl<T : Checkable> : RecyclerView, CheckableTreeView<T> {
-    private val adapter: TreeAdapter<T> by lazy {
+class SingleRecyclerViewImpl : RecyclerView,
+    CheckableTreeView<Node> {
+    private val adapter: TreeAdapter by lazy {
         val indentation = indentation.px
-        TreeAdapter<T>(indentation,this as SingleRecyclerViewImpl<Checkable>)
+        TreeAdapter(
+            indentation,
+            this
+        )
     }
     constructor(context: Context) : super(context)
     constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet)
@@ -29,8 +37,8 @@ class SingleRecyclerViewImpl<T : Checkable> : RecyclerView, CheckableTreeView<T>
         setAdapter(adapter)
     }
 
-    fun treeToList(roots: ViewTreeNode<T>):MutableList<ViewTreeNode<T>>{
-        val result= mutableListOf<ViewTreeNode<T>>(roots)
+    fun treeToList(roots: ViewTreeNode):MutableList<ViewTreeNode>{
+        val result= mutableListOf<ViewTreeNode>(roots)
         val iterator =result.listIterator()
         for(item in iterator){
             if(item.isExpanded){
@@ -43,9 +51,9 @@ class SingleRecyclerViewImpl<T : Checkable> : RecyclerView, CheckableTreeView<T>
         }
         return result
     }
-    @UiThread override fun setRoots(roots: MutableList<ViewTreeNode<T>>) {
+    @UiThread override fun setRoots(roots: MutableList<ViewTreeNode>) {
         with(adapter) {
-            val nodesList=mutableListOf<ViewTreeNode<T>>()
+            val nodesList=mutableListOf<ViewTreeNode>()
             for(root in roots){
                 nodesList.addAll(treeToList(root))
             }
@@ -54,14 +62,14 @@ class SingleRecyclerViewImpl<T : Checkable> : RecyclerView, CheckableTreeView<T>
         }
     }
 
-    fun setItemOnClick(click:(ViewTreeNode<T>, TreeAdapter<T>.ViewHolder)->Unit){
+    fun setItemOnClick(click:(ViewTreeNode, TreeAdapter.ViewHolder)->Unit){
         adapter.setItemOnClick(click)
     }
 }
 
-class TreeAdapter<T : Checkable>(private val indentation: Int,private val recyclerView:SingleRecyclerViewImpl<Checkable>) : RecyclerView.Adapter<TreeAdapter<T>.ViewHolder>() {
-    internal var viewNodes: MutableList<ViewTreeNode<T>> = mutableListOf()
-    private val expandCollapseToggleHandler: (ViewTreeNode<T>, ViewHolder) -> Unit = { node, viewHolder ->
+class TreeAdapter(private val indentation: Int, private val recyclerView: SingleRecyclerViewImpl) : RecyclerView.Adapter<TreeAdapter.ViewHolder>() {
+    internal var viewNodes: MutableList<ViewTreeNode> = mutableListOf()
+    private val expandCollapseToggleHandler: (ViewTreeNode, ViewHolder) -> Unit = { node, viewHolder ->
         if(node.isExpanded) {
             collapse(viewHolder.adapterPosition)
         } else {
@@ -69,12 +77,12 @@ class TreeAdapter<T : Checkable>(private val indentation: Int,private val recycl
         }
         viewHolder.itemView.expandIndicator.startToggleAnimation(node.isExpanded)
     }
-    lateinit var itemOnclick:(ViewTreeNode<T>, ViewHolder)->Unit
+    lateinit var itemOnclick:(ViewTreeNode, ViewHolder)->Unit
 
     init {
         setHasStableIds(true)
     }
-    fun setItemOnClick(click:(ViewTreeNode<T>, TreeAdapter<T>.ViewHolder)->Unit){
+    fun setItemOnClick(click:(ViewTreeNode, ViewHolder)->Unit){
         itemOnclick=click
     }
     override fun getItemId(position: Int): Long {
@@ -84,7 +92,7 @@ class TreeAdapter<T : Checkable>(private val indentation: Int,private val recycl
         val node=viewNodes[position]
         return when(node.value){
 //            is TestNode -> NodeTypes.TEST_NODE.ordinal
-            is QuickCreateNode -> NodeTypes.QUICK_CREATE_NODE.ordinal
+//            is QuickCreateNode -> NodeTypes.QUICK_CREATE_NODE.ordinal
             //TODO: add your node type here
             else -> NodeTypes.NODE.ordinal
         }
@@ -93,14 +101,17 @@ class TreeAdapter<T : Checkable>(private val indentation: Int,private val recycl
         val layout=when(viewType){
             //TODO: add your item layout here
 //            NodeTypes.TEST_NODE.ordinal -> R.layout.item_text_only
-            NodeTypes.QUICK_CREATE_NODE.ordinal -> R.layout.item_quick_create_node
+//            NodeTypes.QUICK_CREATE_NODE.ordinal -> R.layout.item_quick_create_node
             else -> R.layout.item_checkable_text
         }
         return ViewHolder(LayoutInflater.from(parent.context).inflate(layout, parent, false), indentation,recyclerView)
     }
+
+
     override fun getItemCount(): Int {
         return viewNodes.size
     }
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(viewNodes[position])
     }
@@ -122,7 +133,7 @@ class TreeAdapter<T : Checkable>(private val indentation: Int,private val recycl
         if(position >= 0) {
             val node = viewNodes[position]
             var removeCount = 0
-            fun removeChildrenFrom(cur: ViewTreeNode<T>) {
+            fun removeChildrenFrom(cur: ViewTreeNode) {
                 viewNodes.remove(cur)
                 removeCount++
                 if(cur.isExpanded) {
@@ -135,13 +146,13 @@ class TreeAdapter<T : Checkable>(private val indentation: Int,private val recycl
             notifyItemRangeRemoved(position + 1, removeCount)
         }
     }
-    inner class ViewHolder(view: View, private val indentation: Int, recyclerView:SingleRecyclerViewImpl<Checkable>)
+    inner class ViewHolder(view: View, private val indentation: Int, recyclerView: SingleRecyclerViewImpl)
         : RecyclerView.ViewHolder(view) {
 
-        private fun bindIndentation(viewNode: ViewTreeNode<T>){
+        private fun bindIndentation(viewNode: ViewTreeNode){
             itemView.indentation.minimumWidth = indentation * viewNode.getLevel()
         }
-        private fun bindExpandIndicator(viewNode: ViewTreeNode<T>){
+        private fun bindExpandIndicator(viewNode: ViewTreeNode){
             if(viewNode.isLeaf()) {
                 itemView.expandIndicator.visibility = View.GONE
             } else {
@@ -150,11 +161,11 @@ class TreeAdapter<T : Checkable>(private val indentation: Int,private val recycl
                 itemView.expandIndicator.setIcon(viewNode.isExpanded)
             }
         }
-        private fun bindCommon(viewNode: ViewTreeNode<T>){
+        private fun bindCommon(viewNode: ViewTreeNode){
             bindIndentation(viewNode)
             bindExpandIndicator(viewNode)
         }
-        private fun bindCheckableText(viewNode: ViewTreeNode<T>){
+        private fun bindCheckableText(viewNode: ViewTreeNode){
             bindCommon(viewNode)
             itemView.checkText.text = viewNode.value.toString()
             itemView.checkText.setOnCheckedChangeListener(null)
@@ -167,34 +178,37 @@ class TreeAdapter<T : Checkable>(private val indentation: Int,private val recycl
             }
 
         }
-        private fun bindTextOnly(viewNode:ViewTreeNode<T>){
+        private fun bindTextOnly(viewNode: ViewTreeNode){
             bindCommon(viewNode)
             itemView.textView.text = viewNode.value.toString()
             itemView.setOnClickListener {
                 itemOnclick(viewNode,this)
             }
         }
-        private fun bindQuickCreateNode(viewNode: ViewTreeNode<T>){
+        private fun bindQuickCreateNode(viewNode: ViewTreeNode){
             bindIndentation(viewNode)
             itemView.createButton.setOnClickListener {
                 if(viewNode.parent != null) {
                     val str = itemView.editText.text.toString()
-                    val newNode = ViewTreeNode(Node(str),viewNode.parent as ViewTreeNode<Node>)
-                    (viewNode.parent as ViewTreeNode<Node>).children.add(newNode)
-                    viewNode.parent.children.remove(viewNode as ViewTreeNode<Node>)
-                    viewNode.parent?.children?.add(viewNode as ViewTreeNode<Node>)
+                    val newNode = ViewTreeNode(
+                        Node(str),
+                        viewNode.parent as ViewTreeNode
+                    )
+                    (viewNode.parent as ViewTreeNode).children.add(newNode)
+                    viewNode.parent.children.remove(viewNode )
+                    viewNode.parent.children.add(viewNode )
                     itemView.editText.setText("")
                     //TODO: enter->create and hide keyboard
-                    recyclerView.setRoots(mutableListOf(viewNode.getRoot() as ViewTreeNode<Checkable>))
+                    recyclerView.setRoots(mutableListOf(viewNode.getRoot()))
                 }
             }
         }
         //TODO: create your bind function here, do not forget setOnClickListener
-        internal fun bind(viewNode: ViewTreeNode<T>) {
+        internal fun bind(viewNode: ViewTreeNode) {
             when(viewNode.value){
                 //TODO: bind your layout here
 //                is TestNode -> bindTextOnly(viewNode)
-                is QuickCreateNode -> bindQuickCreateNode(viewNode)
+//                is QuickCreateNode -> bindQuickCreateNode(viewNode)
                 else -> bindCheckableText(viewNode)
             }
         }

@@ -1,10 +1,10 @@
-package com.f3401pal.checkabletreeview
-
+package com.example.prototype1.checkabletreeview.views
 import android.content.Context
 import android.graphics.drawable.Animatable
 import android.util.AttributeSet
 import androidx.annotation.UiThread
 import androidx.appcompat.widget.AppCompatImageView
+import com.example.prototype1.R
 
 class ExpandToggleButton : AppCompatImageView {
 

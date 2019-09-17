@@ -1,5 +1,9 @@
 package com.example.prototype1
 
+enum class Constants(str:String?){
+//    RAW_TREE_ROOT_UUID(null)
+}
+
 enum class Tags{
     DEFAULT
 }

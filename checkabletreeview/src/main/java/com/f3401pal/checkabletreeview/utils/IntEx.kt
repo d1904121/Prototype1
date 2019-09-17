@@ -1,4 +1,4 @@
-package com.f3401pal.checkabletreeview
+package com.f3401pal.checkabletreeview.utils
 
 import android.content.res.Resources
 

@@ -1,27 +1,27 @@
 package com.example.prototype1.models
 
-import com.f3401pal.checkabletreeview.Node
+import com.example.prototype1.checkabletreeview.models.Node
+import java.util.*
 
 class TreeSeedNode(
     var value: Node,
     var children:MutableList<TreeSeedNode>,
-    var parent: TreeSeedNode?
+    var parent: TreeSeedNode?,
+    var uuid:String= UUID.randomUUID().toString()
 ) {
     constructor():this(Node(""), mutableListOf<TreeSeedNode>(),null)
     constructor(json:String) :this()  {
-        //TODO
-        val n=Node("")
+        //TODO:generate from json
+        val n= Node("")
         value=n
     }
     constructor(rawTreeNode: RawTreeNode):this(){
-        //TODO
+        //TODO:generate from rawTreeNode
     }
+
+
     fun toJson():String{
         //TODO
         return ""
-    }
-    fun generateRawTreeNode():RawTreeNode{
-        //TODO
-        return RawTreeNode(Node(""))
     }
 }

@@ -1,1 +1,1 @@
-include ':app', ':checkabletreeview'
+include ':app'

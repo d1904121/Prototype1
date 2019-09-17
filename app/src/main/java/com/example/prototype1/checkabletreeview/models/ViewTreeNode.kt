@@ -1,22 +1,26 @@
-package com.f3401pal.checkabletreeview
+package com.example.prototype1.checkabletreeview.models
 
+import com.example.prototype1.checkabletreeview.utils.IdGenerator
+import com.example.prototype1.checkabletreeview.views.Expandable
+import com.example.prototype1.checkabletreeview.views.HasId
+import com.example.prototype1.checkabletreeview.views.NodeCheckedStatus
 import com.google.gson.annotations.Expose
 
-class ViewTreeNode<T : Checkable>(
-    @Expose val value: T,
-    val parent: ViewTreeNode<T>?,
-    @Expose var children: MutableList<ViewTreeNode<T>>,
+class ViewTreeNode(
+    @Expose val value: Node,
+    val parent: ViewTreeNode?,
+    @Expose var children: MutableList<ViewTreeNode>,
     @Expose override var isExpanded: Boolean =false
 ) : HasId, Expandable {
     override val id: Long by lazy {
         IdGenerator.generate()
     }
     // constructor for root node
-    constructor(value: T) : this(value, null,  mutableListOf<ViewTreeNode<T>>())
+    constructor(value: Node) : this(value, null,  mutableListOf<ViewTreeNode>())
     // constructor for leaf node
-    constructor(value: T, parent: ViewTreeNode<T>) : this(value, parent,  mutableListOf<ViewTreeNode<T>>())
+    constructor(value: Node, parent: ViewTreeNode) : this(value, parent,  mutableListOf<ViewTreeNode>())
     // constructor for parent node
-    constructor(value: T, children: MutableList<ViewTreeNode<T>>) : this(value, null, children)
+    constructor(value: Node, children: MutableList<ViewTreeNode>) : this(value, null, children)
 
     fun isTop(): Boolean {
         return parent == null
@@ -25,7 +29,7 @@ class ViewTreeNode<T : Checkable>(
         return children.isEmpty()
     }
     fun getLevel(): Int {
-        fun stepUp (viewNode: ViewTreeNode<T>): Int {
+        fun stepUp (viewNode: ViewTreeNode): Int {
             return viewNode.parent?.let { 1 + stepUp(it) } ?: 0
         }
         return stepUp(this)
@@ -48,14 +52,14 @@ class ViewTreeNode<T : Checkable>(
         }
         return NodeCheckedStatus(hasChildChecked, allChildrenChecked)
     }
-    fun getAggregatedValues(): List<T> {
+    fun getAggregatedValues(): List<Node> {
         return if (isLeaf()) {
             if (value.checked) listOf(value) else emptyList()
         } else {
             if (getCheckedStatus().allChildrenChecked) {
                 listOf(value)
             } else {
-                val result = mutableListOf<T>()
+                val result = mutableListOf<Node>()
                 children.forEach {
                     result.addAll(it.getAggregatedValues())
                 }
@@ -63,7 +67,7 @@ class ViewTreeNode<T : Checkable>(
             }
         }
     }
-    fun getRoot():ViewTreeNode<T>{
+    fun getRoot(): ViewTreeNode {
         var result=this
         while(result.parent!=null)result= result.parent!!
         return result

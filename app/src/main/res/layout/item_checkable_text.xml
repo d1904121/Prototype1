@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <com.f3401pal.checkabletreeview.views.CheckBoxEx
+    <com.example.prototype1.checkabletreeview.views.CheckBoxEx
         android:id="@+id/checkText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
         tools:text="Text"
         />
 
-    <com.f3401pal.checkabletreeview.views.ExpandToggleButton
+    <com.example.prototype1.checkabletreeview.views.ExpandToggleButton
         android:id="@+id/expandIndicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
