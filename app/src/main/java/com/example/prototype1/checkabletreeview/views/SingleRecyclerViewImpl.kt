@@ -36,6 +36,7 @@ class SingleRecyclerViewImpl : RecyclerView,
         setAdapter(adapter)
     }
 
+
     fun treeToList(roots: ViewTreeNode):MutableList<ViewTreeNode>{
         val result= mutableListOf<ViewTreeNode>(roots)
         val iterator =result.listIterator()
@@ -105,7 +106,6 @@ class TreeAdapter(private val indentation: Int, private val recyclerView: Single
         }
         return ViewHolder(LayoutInflater.from(parent.context).inflate(layout, parent, false), indentation,recyclerView)
     }
-
 
     override fun getItemCount(): Int {
         return viewNodes.size

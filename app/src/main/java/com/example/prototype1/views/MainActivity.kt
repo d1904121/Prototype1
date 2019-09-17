@@ -3,6 +3,9 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.prototype1.checkabletreeview.views.SingleRecyclerViewImpl
+import com.example.prototype1.models.Node
+import com.example.prototype1.models.RawTreeNode
+import com.example.prototype1.models.TreeSeedNode
 import com.example.prototype1.utils.AppUtils
 import com.example.prototype1.utils.NodeUtils
 import com.example.prototype1.utils.UserUtils
@@ -29,20 +32,26 @@ class MainActivity : AppCompatActivity() {
         //木構造を表示するリスト
         treeView = findViewById(com.example.prototype1.R.id.treeView)
 
-        treeBtn.setOnClickListener {
-            //木の取得と画面への反映
-            val root=NodeUtils().getRoot(realm)
-            NodeUtils().refreshView(treeView,root)
 
+        realm.executeTransaction {
+            realm.deleteAll()
+        }
+        //木の取得と画面への反映
+        var root=NodeUtils().getRoot(realm)
+        NodeUtils().refreshView(treeView,root)
+
+        treeBtn.setOnClickListener {
             //RawNodeの編集、executeTransactionで、
             //または realm.beginTransaction()とrealm.commitTransaction()
             //で囲んでください
-//        realm.executeTransaction {
-//            root.value!!.str="root2"
-//            root.children.add(RawTreeNode(Node("l21")))
-//        }
+            realm.executeTransaction {
+                root.value!!.str="root2"
+                root.children.add(RawTreeNode(Node("l21")).apply {
+                    children.add(RawTreeNode(Node("xxx")))
+                })
+            }
             //画面への反映を忘れずに
-//        NodeUtils().refreshView(treeView,root)
+            NodeUtils().refreshView(treeView,root)
         }
 
         //項目がクリックされるとき、何をするかを設定
@@ -69,6 +78,15 @@ class MainActivity : AppCompatActivity() {
                         Toast.makeText(this,"teacher:${it?:"null"}", Toast.LENGTH_SHORT).show()
                     })
                 })
+        }
+
+        seedBtn.setOnClickListener {
+            //種（木の構造を保存したもの）をRawTreeNodeから作る
+            val seed=TreeSeedNode(root,null)
+            //サーバに保存するためのJsonをつくる
+//            testText.text=seed.toJson()
+            seed.upload()
+            val a=2
         }
 
 

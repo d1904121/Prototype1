@@ -24,14 +24,19 @@ class ViewTreeNode(
     // constructor for parent node
     constructor(value: Node, children: MutableList<ViewTreeNode>) : this(value, null, children)
 
-    constructor(raw:RawTreeNode,parent:ViewTreeNode?=null):this(Node()){
-        this.value=raw.value!!
+    constructor(raw:RawTreeNode,parent:ViewTreeNode?=null,
+                before:ViewTreeNode?=null):this(Node()){
         this.parent=parent
-        this.isExpanded=false
+        this.isExpanded=(before!=null && before.isExpanded)
+        this.value=raw.value!!
         this.children.clear()
         raw.children.forEach {
-            this.children.add(ViewTreeNode(it,this))
+            val childBefore= before?.children?.findLast {it2->
+                it2.value.uuid== it.value?.uuid
+            }
+            this.children.add(ViewTreeNode(it,this,childBefore))
         }
+
     }
 
     fun isTop(): Boolean {
