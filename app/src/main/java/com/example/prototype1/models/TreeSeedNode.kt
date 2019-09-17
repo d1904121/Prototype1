@@ -17,8 +17,6 @@ class TreeSeedNode(
     constructor(rawTreeNode: RawTreeNode):this(){
         //TODO:generate from rawTreeNode
     }
-
-
     fun toJson():String{
         //TODO
         return ""

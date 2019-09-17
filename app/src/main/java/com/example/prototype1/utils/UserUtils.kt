@@ -15,50 +15,58 @@ import com.google.firebase.database.ValueEventListener
 
 class UserUtils(val activity: AppCompatActivity,
                 val auth:FirebaseAuth,
-                val LOG_TAG:String="USER_TAG",
-                var updateUI:(FirebaseUser?)->Unit={
-                    Toast.makeText(activity.applicationContext,"user-uid:${it?.uid?:"null"}",Toast.LENGTH_SHORT).show()
-                },
-                var whileLogin:()->Unit={
-                    Toast.makeText(activity.applicationContext,"please wait",Toast.LENGTH_SHORT).show()
-                },
-                var whileCreate:()->Unit={
-                    Toast.makeText(activity.applicationContext,"please wait",Toast.LENGTH_SHORT).show()
-                },
-                var loginFailed:(task: Task<AuthResult>)->Unit={
-                    Toast.makeText(activity.applicationContext,"login failed:${it.exception}",Toast.LENGTH_SHORT).show()
-                },
-                var createFailed:(task: Task<AuthResult>)->Unit={
-                    Toast.makeText(activity.applicationContext,"create failed:${it.exception}",Toast.LENGTH_SHORT).show()
-                }
+                val LOG_TAG:String="USER_TAG"
 ){
 
     private val database = FirebaseDatabase.getInstance()
 
-    fun createUser(email:String,password:String){
+    fun createUser(
+        email:String,
+        password:String,
+        callback:(FirebaseUser?)->Unit={
+            Toast.makeText(activity.applicationContext,"user-uid:${it?.uid?:"null"}",Toast.LENGTH_SHORT).show()
+        },
+        whileCreate:()->Unit={
+            Toast.makeText(activity.applicationContext,"please wait",Toast.LENGTH_SHORT).show()
+        },
+        createFailed:(task: Task<AuthResult>)->Unit={
+            Toast.makeText(activity.applicationContext,"create failed:${it.exception}",Toast.LENGTH_SHORT).show()
+        }
+    ){
         whileCreate()
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(activity) { task ->
                 if (task.isSuccessful) {
                     val user = auth.currentUser
-                    updateUI(user)
+                    callback(user)
                 } else {
                     createFailed(task)
-                    updateUI(null)
+                    callback(null)
                 }
             }
     }
 
-    fun login(email:String,password:String){
+    fun login(
+        email:String,
+        password:String,
+        callback:(FirebaseUser?)->Unit={
+            Toast.makeText(activity.applicationContext,"user-uid:${it?.uid?:"null"}",Toast.LENGTH_SHORT).show()
+        },
+        whileLogin:()->Unit={
+            Toast.makeText(activity.applicationContext,"please wait",Toast.LENGTH_SHORT).show()
+        },
+        loginFailed:(task: Task<AuthResult>)->Unit={
+            Toast.makeText(activity.applicationContext,"login failed:${it.exception}",Toast.LENGTH_SHORT).show()
+        }){
         whileLogin()
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(activity) { task ->
                 if (task.isSuccessful) {
                     val user = auth.currentUser
-                    updateUI(user)
+                    callback(user)
                 } else {
                     loginFailed(task)
-                    updateUI(null)
+                    callback(null)
                 }
             }
     }
@@ -71,14 +79,16 @@ class UserUtils(val activity: AppCompatActivity,
     }
 
     fun<T> get(key:String, type:Class<T> , callback:(T?)->Unit, cancelled:(DatabaseError)->Unit={;}){
-        val ref=database.getReference("user-info/${auth.currentUser!!.uid}")
-        ref.child(key).addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                callback(dataSnapshot.getValue(type))
-            }
-            override fun onCancelled(error: DatabaseError) {
-                cancelled(error)
-            }
-        })
+        if(auth.currentUser!=null){
+            val ref=database.getReference("user-info/${auth.currentUser!!.uid}")
+            ref.child(key).addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    callback(dataSnapshot.getValue(type))
+                }
+                override fun onCancelled(error: DatabaseError) {
+                    cancelled(error)
+                }
+            })
+        }
     }
 }
