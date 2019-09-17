@@ -8,7 +8,7 @@ import androidx.annotation.UiThread
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.prototype1.R
-import com.example.prototype1.checkabletreeview.models.NodeTypes
+import com.example.prototype1.checkabletreeview.models.ViewNodeTypes
 import com.example.prototype1.checkabletreeview.models.ViewTreeNode
 import com.example.prototype1.checkabletreeview.utils.px
 import com.example.prototype1.models.Node
@@ -91,17 +91,17 @@ class TreeAdapter(private val indentation: Int, private val recyclerView: Single
     override fun getItemViewType(position: Int): Int {
         val node=viewNodes[position]
         return when(node.value){
-//            is TestNode -> NodeTypes.TEST_NODE.ordinal
-//            is QuickCreateNode -> NodeTypes.QUICK_CREATE_NODE.ordinal
+//            is TestNode -> ViewNodeTypes.TEST_NODE.ordinal
+//            is QuickCreateNode -> ViewNodeTypes.QUICK_CREATE_NODE.ordinal
             //TODO: add your node type here
-            else -> NodeTypes.NODE.ordinal
+            else -> ViewNodeTypes.NODE.ordinal
         }
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layout=when(viewType){
             //TODO: add your item layout here
-//            NodeTypes.TEST_NODE.ordinal -> R.layout.item_text_only
-//            NodeTypes.QUICK_CREATE_NODE.ordinal -> R.layout.item_quick_create_node
+//            ViewNodeTypes.TEST_NODE.ordinal -> R.layout.item_text_only
+//            ViewNodeTypes.QUICK_CREATE_NODE.ordinal -> R.layout.item_quick_create_node
             else -> R.layout.item_checkable_text
         }
         return ViewHolder(LayoutInflater.from(parent.context).inflate(layout, parent, false), indentation,recyclerView)

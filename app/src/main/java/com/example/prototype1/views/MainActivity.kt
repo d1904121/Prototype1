@@ -83,10 +83,15 @@ class MainActivity : AppCompatActivity() {
         seedBtn.setOnClickListener {
             //種（木の構造を保存したもの）をRawTreeNodeから作る
             val seed=TreeSeedNode(root,null)
-            //サーバに保存するためのJsonをつくる
-//            testText.text=seed.toJson()
+            //サーバに公開する
             seed.upload()
-            val a=2
+        }
+
+        seedDlBtn.setOnClickListener {
+//            -Lp-N2NkNuZNE3TtF6k0
+            TreeSeedNode().download("-Lp-N2NkNuZNE3TtF6k0",{
+                Toast.makeText(this, it?.uuid?:"null",Toast.LENGTH_SHORT).show()
+            })
         }
 
 
