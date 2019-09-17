@@ -53,6 +53,7 @@ class TreeSeedNode(
         var checked: Boolean=false,
         var uuid:String=""
     ){
+        constructor():this("")
         constructor(node:Node):this(){
             this.str=node.str
             this.type=node.type
@@ -73,6 +74,7 @@ class TreeSeedNode(
         var value: SeedValueForFirebase,
         var children:MutableList<SeedNodeForFirebase>,
         var uuid:String= ""){
+        constructor():this(SeedValueForFirebase(), mutableListOf())
         constructor(seed:TreeSeedNode,parent: SeedNodeForFirebase?):this(SeedValueForFirebase(), mutableListOf()){
             this.value=SeedValueForFirebase(seed.value)
             this.uuid=seed.uuid

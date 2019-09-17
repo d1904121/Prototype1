@@ -89,8 +89,23 @@ class MainActivity : AppCompatActivity() {
 
         seedDlBtn.setOnClickListener {
 //            -Lp-N2NkNuZNE3TtF6k0
+            //種のダウンロード
             TreeSeedNode().download("-Lp-N2NkNuZNE3TtF6k0",{
                 Toast.makeText(this, it?.uuid?:"null",Toast.LENGTH_SHORT).show()
+            })
+        }
+
+        newBtn.setOnClickListener {
+            //種から木を生成
+            TreeSeedNode().download("-Lp-N2NkNuZNE3TtF6k0",{seed->
+                realm.executeTransaction {
+                    if(seed!=null){
+                        root=RawTreeNode(seed)
+                    }
+                }
+
+                //画面への反映を忘れずに
+                NodeUtils().refreshView(treeView,root)
             })
         }
 
