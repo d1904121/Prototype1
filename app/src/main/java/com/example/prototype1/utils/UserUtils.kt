@@ -15,7 +15,7 @@ import com.google.firebase.database.ValueEventListener
 
 class UserUtils(val activity: AppCompatActivity,
                 val auth:FirebaseAuth,
-                val TAG:String="USER_TAG",
+                val LOG_TAG:String="USER_TAG",
                 var updateUI:(FirebaseUser?)->Unit={
                     Toast.makeText(activity.applicationContext,"user-uid:${it?.uid?:"null"}",Toast.LENGTH_SHORT).show()
                 },
