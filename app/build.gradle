@@ -42,11 +42,6 @@ dependencies {
     testImplementation 'junit:junit:4.13-beta-3'
     androidTestImplementation 'androidx.test:runner:1.3.0-alpha02'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0-alpha02'
-
-//    implementation project(':checkabletreeview')
     implementation 'androidx.recyclerview:recyclerview:1.1.0-beta04'
-
-    //for gson
     implementation 'com.google.code.gson:gson:2.8.5'
-
 }

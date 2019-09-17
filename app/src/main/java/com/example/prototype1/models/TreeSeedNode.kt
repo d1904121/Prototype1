@@ -1,6 +1,5 @@
 package com.example.prototype1.models
 
-import com.example.prototype1.checkabletreeview.models.Node
 import java.util.*
 
 class TreeSeedNode(

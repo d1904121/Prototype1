@@ -8,10 +8,10 @@ import androidx.annotation.UiThread
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.prototype1.R
-import com.example.prototype1.checkabletreeview.models.Node
 import com.example.prototype1.checkabletreeview.models.NodeTypes
 import com.example.prototype1.checkabletreeview.models.ViewTreeNode
 import com.example.prototype1.checkabletreeview.utils.px
+import com.example.prototype1.models.Node
 import kotlinx.android.synthetic.main.item_checkable_text.view.*
 import kotlinx.android.synthetic.main.item_checkable_text.view.expandIndicator
 import kotlinx.android.synthetic.main.item_checkable_text.view.indentation
@@ -194,8 +194,8 @@ class TreeAdapter(private val indentation: Int, private val recyclerView: Single
                         viewNode.parent as ViewTreeNode
                     )
                     (viewNode.parent as ViewTreeNode).children.add(newNode)
-                    viewNode.parent.children.remove(viewNode )
-                    viewNode.parent.children.add(viewNode )
+                    viewNode.parent!!.children.remove(viewNode )
+                    viewNode.parent!!.children.add(viewNode )
                     itemView.editText.setText("")
                     //TODO: enter->create and hide keyboard
                     recyclerView.setRoots(mutableListOf(viewNode.getRoot()))

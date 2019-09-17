@@ -4,11 +4,13 @@ import com.example.prototype1.checkabletreeview.utils.IdGenerator
 import com.example.prototype1.checkabletreeview.views.Expandable
 import com.example.prototype1.checkabletreeview.views.HasId
 import com.example.prototype1.checkabletreeview.views.NodeCheckedStatus
+import com.example.prototype1.models.Node
+import com.example.prototype1.models.RawTreeNode
 import com.google.gson.annotations.Expose
 
 class ViewTreeNode(
-    @Expose val value: Node,
-    val parent: ViewTreeNode?,
+    @Expose var value: Node,
+    var parent: ViewTreeNode?,
     @Expose var children: MutableList<ViewTreeNode>,
     @Expose override var isExpanded: Boolean =false
 ) : HasId, Expandable {
@@ -21,6 +23,16 @@ class ViewTreeNode(
     constructor(value: Node, parent: ViewTreeNode) : this(value, parent,  mutableListOf<ViewTreeNode>())
     // constructor for parent node
     constructor(value: Node, children: MutableList<ViewTreeNode>) : this(value, null, children)
+
+    constructor(raw:RawTreeNode,parent:ViewTreeNode?=null):this(Node()){
+        this.value=raw.value!!
+        this.parent=parent
+        this.isExpanded=false
+        this.children.clear()
+        raw.children.forEach {
+            this.children.add(ViewTreeNode(it,this))
+        }
+    }
 
     fun isTop(): Boolean {
         return parent == null
