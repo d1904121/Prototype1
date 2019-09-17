@@ -1,7 +1,9 @@
-package com.example.prototype1
+package com.example.prototype1.views
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.example.prototype1.R
+import com.example.prototype1.VariableNames
 import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
