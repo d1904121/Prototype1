@@ -1,22 +1,26 @@
 package com.example.prototype1.checkabletreeview.views
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.UiThread
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.prototype1.R
+import com.example.prototype1.Tags
 import com.example.prototype1.checkabletreeview.models.ViewNodeTypes
+import com.example.prototype1.checkabletreeview.models.ViewNodeUtils
 import com.example.prototype1.checkabletreeview.models.ViewTreeNode
 import com.example.prototype1.checkabletreeview.utils.px
 import com.example.prototype1.models.Node
+import com.example.prototype1.models.RawTreeNode
+import com.example.prototype1.utils.NodeUtils
+import io.realm.Realm
 import kotlinx.android.synthetic.main.item_checkable_text.view.*
-import kotlinx.android.synthetic.main.item_checkable_text.view.expandIndicator
 import kotlinx.android.synthetic.main.item_checkable_text.view.indentation
 import kotlinx.android.synthetic.main.item_quick_create_node.view.*
-import kotlinx.android.synthetic.main.item_text_only.view.*
+import java.util.*
 
 private const val TAG = "SingleRecyclerView"
 class SingleRecyclerViewImpl : RecyclerView,
@@ -28,6 +32,7 @@ class SingleRecyclerViewImpl : RecyclerView,
             this
         )
     }
+    var realm:Realm? = null
     constructor(context: Context) : super(context)
     constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet)
     constructor(context: Context, attributeSet: AttributeSet, style: Int) : super(context, attributeSet, style)
@@ -89,22 +94,12 @@ class TreeAdapter(private val indentation: Int, private val recyclerView: Single
         return viewNodes[position].id
     }
     override fun getItemViewType(position: Int): Int {
-        val node=viewNodes[position]
-        return when(node.value){
-//            is TestNode -> ViewNodeTypes.TEST_NODE.ordinal
-//            is QuickCreateNode -> ViewNodeTypes.QUICK_CREATE_NODE.ordinal
-            //TODO: add your node type here
-            else -> ViewNodeTypes.NODE.ordinal
-        }
+        val node = viewNodes[position]
+        return node.type.ordinal
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val layout=when(viewType){
-            //TODO: add your item layout here
-//            ViewNodeTypes.TEST_NODE.ordinal -> R.layout.item_text_only
-//            ViewNodeTypes.QUICK_CREATE_NODE.ordinal -> R.layout.item_quick_create_node
-            else -> R.layout.item_checkable_text
-        }
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(layout, parent, false), indentation,recyclerView)
+        val layout=ViewNodeUtils().getLayout(viewType)
+        return ViewHolder(LayoutInflater.from(parent.context).inflate(layout, parent, false), indentation,recyclerView,recyclerView.realm)
     }
 
     override fun getItemCount(): Int {
@@ -145,7 +140,7 @@ class TreeAdapter(private val indentation: Int, private val recyclerView: Single
             notifyItemRangeRemoved(position + 1, removeCount)
         }
     }
-    inner class ViewHolder(view: View, private val indentation: Int, recyclerView: SingleRecyclerViewImpl)
+    inner class ViewHolder(view: View, private val indentation: Int, recyclerView: SingleRecyclerViewImpl,val realm: Realm?)
         : RecyclerView.ViewHolder(view) {
 
         private fun bindIndentation(viewNode: ViewTreeNode){
@@ -177,37 +172,41 @@ class TreeAdapter(private val indentation: Int, private val recyclerView: Single
             }
 
         }
-        private fun bindTextOnly(viewNode: ViewTreeNode){
-            bindCommon(viewNode)
-            itemView.textView.text = viewNode.value.toString()
-            itemView.setOnClickListener {
-                itemOnclick(viewNode,this)
-            }
-        }
         private fun bindQuickCreateNode(viewNode: ViewTreeNode){
             bindIndentation(viewNode)
+            //TODO: enter->create and hide keyboard
             itemView.createButton.setOnClickListener {
                 if(viewNode.parent != null) {
-                    val str = itemView.editText.text.toString()
-                    val newNode = ViewTreeNode(
-                        Node(str),
-                        viewNode.parent as ViewTreeNode
-                    )
-                    (viewNode.parent as ViewTreeNode).children.add(newNode)
-                    viewNode.parent!!.children.remove(viewNode )
-                    viewNode.parent!!.children.add(viewNode )
+                    //get variables
+                    val inputStr = itemView.editText.text.toString()
+                    val viewParent=viewNode.parent as ViewTreeNode
+                    if(viewNode.parent!=null && realm!=null) {
+                        //create new RawNode
+                        realm.executeTransaction {
+                            val newNode=realm.createObject(RawTreeNode::class.java,
+                                UUID.randomUUID().toString()).apply {
+                                value=realm.createObject(Node::class.java).apply {
+                                    //set new node
+                                    str=inputStr
+                                }
+                                parent=viewParent.rawReference
+                            }
+                            viewParent.rawReference?.children?.add((newNode))
+                        }
+                    }else{
+                        Log.w(Tags.DEFAULT.name, "SingleRecyclerViewImpl:realm not set, or parent does not exist")
+                    }
+                    viewParent.children.remove(viewNode)
                     itemView.editText.setText("")
-                    //TODO: enter->create and hide keyboard
-                    recyclerView.setRoots(mutableListOf(viewNode.getRoot()))
+                    viewParent.children.add(viewNode)
+                    NodeUtils().refreshView(recyclerView, viewParent.rawReference?.getRoot())
                 }
             }
         }
         //TODO: create your bind function here, do not forget setOnClickListener
         internal fun bind(viewNode: ViewTreeNode) {
-            when(viewNode.value){
-                //TODO: bind your layout here
-//                is TestNode -> bindTextOnly(viewNode)
-//                is QuickCreateNode -> bindQuickCreateNode(viewNode)
+            when(viewNode.type){
+                ViewNodeTypes.QUICK_CREATE_NODE -> bindQuickCreateNode(viewNode)
                 else -> bindCheckableText(viewNode)
             }
         }

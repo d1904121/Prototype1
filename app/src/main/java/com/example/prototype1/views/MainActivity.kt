@@ -31,11 +31,11 @@ class MainActivity : AppCompatActivity() {
 
         //木構造を表示するリスト
         treeView = findViewById(com.example.prototype1.R.id.treeView)
+        treeView.realm=realm
 
-
-        realm.executeTransaction {
-            realm.deleteAll()
-        }
+//        realm.executeTransaction {
+//            realm.deleteAll()//デバッグ用：全データを消す
+//        }
         //木の取得と画面への反映
         var root=NodeUtils().getRoot(realm)
         NodeUtils().refreshView(treeView,root)
@@ -107,6 +107,11 @@ class MainActivity : AppCompatActivity() {
                 //画面への反映を忘れずに
                 NodeUtils().refreshView(treeView,root)
             })
+        }
+
+        upBtn.setOnClickListener {
+            val seed=TreeSeedNode(root,null)
+            seed.upload()
         }
 
 

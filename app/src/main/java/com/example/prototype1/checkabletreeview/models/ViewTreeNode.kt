@@ -10,19 +10,21 @@ import com.google.gson.annotations.Expose
 
 class ViewTreeNode(
     @Expose var value: Node,
+    var type:ViewNodeTypes=ViewNodeTypes.NODE,
     var parent: ViewTreeNode?,
     @Expose var children: MutableList<ViewTreeNode>,
-    @Expose override var isExpanded: Boolean =false
+    @Expose override var isExpanded: Boolean =false,
+    var rawReference:RawTreeNode?=null
 ) : HasId, Expandable {
     override val id: Long by lazy {
         IdGenerator.generate()
     }
     // constructor for root node
-    constructor(value: Node) : this(value, null,  mutableListOf<ViewTreeNode>())
+    constructor(value: Node) : this(value,ViewNodeTypes.NODE, null,  mutableListOf<ViewTreeNode>())
     // constructor for leaf node
-    constructor(value: Node, parent: ViewTreeNode) : this(value, parent,  mutableListOf<ViewTreeNode>())
+    constructor(value: Node, parent: ViewTreeNode) : this(value,ViewNodeTypes.NODE, parent,  mutableListOf<ViewTreeNode>())
     // constructor for parent node
-    constructor(value: Node, children: MutableList<ViewTreeNode>) : this(value, null, children)
+    constructor(value: Node, children: MutableList<ViewTreeNode>) : this(value,ViewNodeTypes.NODE, null, children)
 
     constructor(raw:RawTreeNode,parent:ViewTreeNode?=null,
                 before:ViewTreeNode?=null):this(Node()){
@@ -30,13 +32,15 @@ class ViewTreeNode(
         this.isExpanded=(before!=null && before.isExpanded)
         this.value=raw.value!!
         this.children.clear()
+        //TODO: delete
+        this.rawReference=raw
         raw.children.forEach {
             val childBefore= before?.children?.findLast {it2->
                 it2.value.uuid== it.value?.uuid
             }
             this.children.add(ViewTreeNode(it,this,childBefore))
         }
-
+        this.children.add(ViewTreeNode(Node(),ViewNodeTypes.QUICK_CREATE_NODE,this, mutableListOf()))
     }
 
     fun isTop(): Boolean {

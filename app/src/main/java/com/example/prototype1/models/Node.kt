@@ -1,6 +1,6 @@
 package com.example.prototype1.models
+import com.example.prototype1.NodeTypes
 import com.example.prototype1.checkabletreeview.models.NodeDetailMap
-import com.example.prototype1.checkabletreeview.models.ViewNodeTypes
 import com.example.prototype1.checkabletreeview.views.Checkable
 import com.google.gson.annotations.Expose
 import io.realm.RealmObject
@@ -11,7 +11,7 @@ import java.util.*
 @RealmModule(allClasses = true)
 open class Node(
     @Expose open var str: String="",
-    @Expose open var type:String= ViewNodeTypes.NODE.name,
+    @Expose open var type:String= NodeTypes.NODE.name,
     @Expose open var notice: Date?=null,
     @Expose open var sharedId:String?=null,
     @Expose open var mediaUri:String?=null,
