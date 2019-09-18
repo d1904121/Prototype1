@@ -28,7 +28,7 @@ class TreeSeedNode(
 
         this.value = Node(
             seed.value.str, seed.value.type, seed.value.notice, seed.value.sharedId, seed.value.mediaUri,
-            null, seed.value.link, seed.value.power, seed.value.checked, seed.value.uuid
+            null, seed.value.link, seed.value.power, seed.value.uuid,seed.value.checked
         )
         seed.value.detail?.forEach { (key, value) ->
             this.value.setDetail(key, value)
@@ -50,8 +50,8 @@ class TreeSeedNode(
         var detail: MutableMap<String,String?>?= mutableMapOf(),
         var link:String?=null,
         var power:Int=1,
-        var checked: Boolean=false,
-        var uuid:String=""
+        var uuid:String="",
+        var checked: Boolean=false
     ){
         constructor():this("")
         constructor(node:Node):this(){
@@ -60,7 +60,6 @@ class TreeSeedNode(
             this.notice=node.notice
             this.sharedId=node.sharedId
             this.mediaUri=node.mediaUri
-
             node.detail?.list?.forEach {
                 this.detail?.set(it.key,it.value)
             }

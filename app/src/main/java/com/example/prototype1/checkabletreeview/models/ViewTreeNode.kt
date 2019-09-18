@@ -6,7 +6,9 @@ import com.example.prototype1.checkabletreeview.views.HasId
 import com.example.prototype1.checkabletreeview.views.NodeCheckedStatus
 import com.example.prototype1.models.Node
 import com.example.prototype1.models.RawTreeNode
+import com.example.prototype1.utils.AppUtils
 import com.google.gson.annotations.Expose
+import io.realm.Realm
 
 class ViewTreeNode(
     @Expose var value: Node,
@@ -40,7 +42,7 @@ class ViewTreeNode(
             }
             this.children.add(ViewTreeNode(it,this,childBefore))
         }
-        this.children.add(ViewTreeNode(Node(),ViewNodeTypes.QUICK_CREATE_NODE,this, mutableListOf()))
+        this.children.add(ViewTreeNode(Node(checked = true),ViewNodeTypes.QUICK_CREATE_NODE,this, mutableListOf()))
     }
 
     fun isTop(): Boolean {
@@ -48,22 +50,32 @@ class ViewTreeNode(
     }
     fun isLeaf(): Boolean {
         return children.isEmpty()
+//        return children.size<=1//1: quick create node
     }
+
     fun getLevel(): Int {
         fun stepUp (viewNode: ViewTreeNode): Int {
             return viewNode.parent?.let { 1 + stepUp(it) } ?: 0
         }
         return stepUp(this)
     }
-    fun setChecked(isChecked: Boolean) {
-        value.checked = isChecked
-        // cascade the action to children
-        children.forEach {
-            it.setChecked(isChecked)
+    fun setChecked(isChecked: Boolean,realm: Realm?,viewNode:ViewTreeNode) {
+        if (realm != null) {
+            AppUtils().executeTransactionIfNotInTransaction(realm){
+                viewNode.value.checked=rawReference?.progress?:0>0
+                viewNode.children.forEach {
+                    it.rawReference?.progress=if(rawReference?.progress?:0>0)1 else 0
+                    setChecked(isChecked,realm,it)
+                }
+            }
         }
     }
     fun getCheckedStatus(): NodeCheckedStatus {
-        if (isLeaf()) return NodeCheckedStatus(value.checked, value.checked)
+        if(type==ViewNodeTypes.QUICK_CREATE_NODE) {
+            return NodeCheckedStatus(false, true)
+        }
+        //1:quick create
+        if (children.size<=1) return NodeCheckedStatus(value.checked, value.checked)
         var hasChildChecked = false
         var allChildrenChecked = true
         children.forEach {

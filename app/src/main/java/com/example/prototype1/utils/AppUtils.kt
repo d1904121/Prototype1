@@ -29,7 +29,11 @@ class AppUtils(){
         Realm.setDefaultConfiguration(config)
         return Realm.getDefaultInstance()!!
     }
-    fun createRealmObject(){
-
+    fun executeTransactionIfNotInTransaction(realm:Realm,function:(Realm)->Unit){
+        val inTransaction=realm.isInTransaction
+        if(!inTransaction)realm.beginTransaction()
+        function(realm)
+        if(!inTransaction)realm.commitTransaction()
     }
+
 }

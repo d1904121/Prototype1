@@ -15,6 +15,7 @@ import com.example.prototype1.checkabletreeview.models.ViewTreeNode
 import com.example.prototype1.checkabletreeview.utils.px
 import com.example.prototype1.models.Node
 import com.example.prototype1.models.RawTreeNode
+import com.example.prototype1.utils.AppUtils
 import com.example.prototype1.utils.NodeUtils
 import io.realm.Realm
 import kotlinx.android.synthetic.main.item_checkable_text.view.*
@@ -163,13 +164,44 @@ class TreeAdapter(private val indentation: Int, private val recyclerView: Single
             bindCommon(viewNode)
             itemView.checkText.text = viewNode.value.toString()
             itemView.checkText.setOnCheckedChangeListener(null)
-            val state = viewNode.getCheckedStatus()
-            itemView.checkText.isChecked = state.allChildrenChecked
-            itemView.checkText.setIndeterminate(state.hasChildChecked)
+            itemView.checkText.isChecked=viewNode.rawReference?.progress?:0>0
+//            itemView.checkText.setIndeterminate(state.hasChildChecked)
+            itemView.checkText.setIndeterminate(viewNode.rawReference?.progress?:0>0)
+
+//            itemView.checkText.isChecked = state.allChildrenChecked
+
             itemView.checkText.setOnCheckedChangeListener { _, isChecked ->
-                viewNode.setChecked(isChecked)
+
+                if (realm != null) {
+                    AppUtils().executeTransactionIfNotInTransaction(realm){
+                        if(viewNode.rawReference?.progress?:0>0){
+                            viewNode.rawReference?.progress=0
+                        }else{
+                            viewNode.rawReference?.progress=1
+                        }
+                        viewNode.setChecked(isChecked,realm,viewNode)
+
+                        if(viewNode.parent!=null){
+                            var parent=viewNode.parent
+                            var state:NodeCheckedStatus?=null
+                            while(parent!=null && realm != null) {
+                                state=parent.getCheckedStatus()
+                                AppUtils().executeTransactionIfNotInTransaction(realm) {
+                                    parent!!.rawReference?.progress =
+                                        if (state.allChildrenChecked) 1 else 0
+                                    parent!!.value.checked = state.allChildrenChecked
+                                }
+                                parent=parent.parent
+                            }
+                        }
+
+
+                        NodeUtils().refreshView(recyclerView, viewNode.rawReference?.getRoot())
+                    }
+                }
                 notifyDataSetChanged()
             }
+
 
         }
         private fun bindQuickCreateNode(viewNode: ViewTreeNode){

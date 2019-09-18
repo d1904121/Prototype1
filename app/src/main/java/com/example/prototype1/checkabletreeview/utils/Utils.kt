@@ -1,7 +1,7 @@
 package com.example.prototype1.checkabletreeview.utils
 import android.os.SystemClock
-import com.example.prototype1.models.Node
 import com.example.prototype1.checkabletreeview.models.ViewTreeNode
+import com.example.prototype1.models.Node
 
 object IdGenerator {
 

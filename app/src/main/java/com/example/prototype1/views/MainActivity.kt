@@ -33,8 +33,9 @@ class MainActivity : AppCompatActivity() {
         treeView = findViewById(com.example.prototype1.R.id.treeView)
         treeView.realm=realm
 
+        //デバッグ用：全データを消す
 //        realm.executeTransaction {
-//            realm.deleteAll()//デバッグ用：全データを消す
+//            realm.deleteAll()
 //        }
         //木の取得と画面への反映
         var root=NodeUtils().getRoot(realm)
@@ -43,7 +44,10 @@ class MainActivity : AppCompatActivity() {
         treeBtn.setOnClickListener {
             //RawNodeの編集、executeTransactionで、
             //または realm.beginTransaction()とrealm.commitTransaction()
-            //で囲んでください
+            //で囲んでください、「すでにTransactionにいる」みたいなエラーがでたら
+            // AppUtils().executeTransactionIfNotInTransaction(realm){...}
+            // を使ってください
+
             realm.executeTransaction {
                 root.value!!.str="root2"
                 root.children.add(RawTreeNode(Node("l21")).apply {

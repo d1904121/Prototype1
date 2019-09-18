@@ -4,7 +4,6 @@ import com.example.prototype1.checkabletreeview.models.NodeDetailMap
 import com.example.prototype1.checkabletreeview.views.Checkable
 import com.google.gson.annotations.Expose
 import io.realm.RealmObject
-import io.realm.annotations.Ignore
 import io.realm.annotations.RealmModule
 import java.util.*
 
@@ -18,8 +17,8 @@ open class Node(
     @Expose open var detail: NodeDetailMap?=null,
     @Expose open var link:String?=null,
     @Expose open var power:Int=1,
-    @Expose @Ignore override var checked: Boolean=false,
-    @Expose open var uuid:String=UUID.randomUUID().toString()
+    @Expose open var uuid:String=UUID.randomUUID().toString(),
+    @Expose override var checked: Boolean=false
 ) : Checkable, RealmObject() {
 
     override fun toString(): String {

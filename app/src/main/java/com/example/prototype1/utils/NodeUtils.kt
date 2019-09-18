@@ -22,7 +22,7 @@ class NodeUtils {
         return result
     }
 
-    fun refreshView(view:SingleRecyclerViewImpl,root:RawTreeNode?){
+    fun refreshView(view: SingleRecyclerViewImpl, root:RawTreeNode?){
         if(root!=null){
             view.setRoots(mutableListOf(ViewTreeNode(root,null,(view.adapter as TreeAdapter).viewNodes.firstOrNull())))
         }
