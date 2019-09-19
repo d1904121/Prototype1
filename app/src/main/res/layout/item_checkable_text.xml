@@ -12,18 +12,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <com.example.prototype1.checkabletreeview.views.CheckBoxEx
-        android:id="@+id/checkText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_gravity="center_vertical"
-        android:maxLines="1"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:button="@drawable/ic_check_box_button"
-        tools:text="Text"
+    <FrameLayout
+            android:layout_height="wrap_content"
+            android:layout_weight="1" android:layout_width="0dp">
+        <com.example.prototype1.checkabletreeview.views.CheckBoxEx
+                android:id="@+id/checkText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:maxLines="1"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:button="@drawable/ic_check_box_button"
+                tools:text="Text"
         />
+        <View android:layout_marginStart="24dp"
+              android:layout_width="match_parent"
+              android:layout_height="24dp"
+              android:id="@+id/rightView"/>
+    </FrameLayout>
 
     <com.example.prototype1.checkabletreeview.views.ExpandToggleButton
         android:id="@+id/expandIndicator"

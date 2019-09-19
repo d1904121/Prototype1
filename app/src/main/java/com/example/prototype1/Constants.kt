@@ -11,7 +11,8 @@ enum class Tags{
 val TAG=Tags.DEFAULT.name //for debug
 
 enum class VariableNames{
-    NODE
+    NODE,
+    NODE_UUID
 }
 
 enum class NodeTypes{

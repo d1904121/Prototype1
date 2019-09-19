@@ -1,7 +1,10 @@
 package com.example.prototype1.views
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.prototype1.VariableNames
+import com.example.prototype1.checkabletreeview.models.ViewNodeTypes
 import com.example.prototype1.checkabletreeview.views.SingleRecyclerViewImpl
 import com.example.prototype1.models.Node
 import com.example.prototype1.models.RawTreeNode
@@ -107,7 +110,6 @@ class MainActivity : AppCompatActivity() {
                         root=RawTreeNode(seed)
                     }
                 }
-
                 //画面への反映を忘れずに
                 NodeUtils().refreshView(treeView,root)
             })
@@ -121,6 +123,26 @@ class MainActivity : AppCompatActivity() {
         deleteBtn.setOnClickListener {
             realm.executeTransaction {
                 realm.deleteAll()
+            }
+        }
+
+
+
+        treeView.setItemOnClick { viewTreeNode, viewHolder ->
+            when(viewTreeNode.type){
+                ViewNodeTypes.NODE->{
+                    val intent= Intent(this, NodeDetailActivity::class.java).apply {
+                        putExtra(VariableNames.NODE_UUID.name, viewTreeNode.rawReference?.uuid)
+                    }
+                    startActivity(intent)
+                }
+                ViewNodeTypes.QUICK_CREATE_NODE->{;}
+                else->{
+                    val intent= Intent(this, NodeDetailActivity::class.java).apply {
+                        putExtra(VariableNames.NODE_UUID.name, viewTreeNode.rawReference?.uuid)
+                    }
+                    startActivity(intent)
+                }
             }
         }
 

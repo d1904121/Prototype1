@@ -33,4 +33,12 @@ open class NodeDetailMap(
     fun unset(key:String){
         set(key,null)
     }
+
+    override fun toString(): String {
+        val builder=StringBuilder()
+        list.forEach {
+            builder.append("${it.key}:${it.value}\n")
+        }
+        return builder.toString()
+    }
 }

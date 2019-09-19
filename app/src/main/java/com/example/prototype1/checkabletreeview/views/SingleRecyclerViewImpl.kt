@@ -17,7 +17,6 @@ import com.example.prototype1.checkabletreeview.utils.px
 import com.example.prototype1.models.Node
 import com.example.prototype1.models.RawTreeNode
 import com.example.prototype1.utils.AppUtils
-import com.example.prototype1.utils.NodeUtils
 import io.realm.Realm
 import kotlinx.android.synthetic.main.item_checkable_text.view.*
 import kotlinx.android.synthetic.main.item_checkable_text.view.indentation
@@ -169,16 +168,18 @@ class TreeAdapter(private val indentation: Int, private val recyclerView: Single
         }
         private fun bindCheckableText(viewNode: ViewTreeNode){
             bindCommon(viewNode)
+
             itemView.checkText.text = viewNode.value.toString()
             itemView.checkText.setOnCheckedChangeListener(null)
             itemView.checkText.isChecked=viewNode.rawReference?.progress?:0>0
-//            itemView.checkText.setIndeterminate(state.hasChildChecked)
             itemView.checkText.setIndeterminate(viewNode.rawReference?.progress?:0>0)
 
-//            itemView.checkText.isChecked = state.allChildrenChecked
+            itemView.rightView.setOnClickListener {
+                itemOnclick(viewNode,this)
+
+            }
 
             itemView.checkText.setOnCheckedChangeListener { _, isChecked ->
-
                 if (realm != null) {
                     AppUtils().executeTransactionIfNotInTransaction(realm){
                         if(viewNode.rawReference?.progress?:0>0){
@@ -186,11 +187,11 @@ class TreeAdapter(private val indentation: Int, private val recyclerView: Single
                         }else{
                             viewNode.rawReference?.progress=1
                         }
-                        viewNode.setChecked(isChecked,realm,viewNode)
+                        viewNode.setChecked(viewNode.rawReference?.progress?:0>0,realm,viewNode)
 
                         if(viewNode.parent!=null){
                             var parent=viewNode.parent
-                            var state:NodeCheckedStatus?=null
+                            var state: NodeCheckedStatus?
                             while(parent!=null && realm != null) {
                                 state=parent.getCheckedStatus()
                                 AppUtils().executeTransactionIfNotInTransaction(realm) {
@@ -201,15 +202,10 @@ class TreeAdapter(private val indentation: Int, private val recyclerView: Single
                                 parent=parent.parent
                             }
                         }
-
-
-                        NodeUtils().refreshView(recyclerView, viewNode.rawReference?.getRoot())
                     }
+                    notifyDataSetChanged()
                 }
-                notifyDataSetChanged()
             }
-
-
         }
         private fun bindQuickCreateNode(viewNode: ViewTreeNode){
             bindIndentation(viewNode)
