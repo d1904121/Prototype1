@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.UiThread
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -214,6 +215,10 @@ class TreeAdapter(private val indentation: Int, private val recyclerView: Single
             bindIndentation(viewNode)
             //TODO: enter->create and hide keyboard
             itemView.createButton.setOnClickListener {
+                if(itemView.editText.text.toString().isEmpty()){
+                    Toast.makeText(recyclerView.context,"Please input something",Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
                 if(viewNode.parent != null) {
                     //get variables
                     val inputStr = itemView.editText.text.toString()
