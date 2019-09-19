@@ -86,7 +86,7 @@ class TreeAdapter(private val indentation: Int, private val recyclerView: Single
         } else {
             expand(viewHolder.adapterPosition)
         }
-        viewHolder.itemView.expandIndicator.startToggleAnimation(node.isExpanded)
+//        viewHolder.itemView.expandIndicator.startToggleAnimation(node.isExpanded)
     }
     lateinit var itemOnclick:(ViewTreeNode, ViewHolder)->Unit
 
@@ -153,18 +153,18 @@ class TreeAdapter(private val indentation: Int, private val recyclerView: Single
         private fun bindIndentation(viewNode: ViewTreeNode){
             itemView.indentation.minimumWidth = indentation * viewNode.getLevel()
         }
-        private fun bindExpandIndicator(viewNode: ViewTreeNode){
-            if(viewNode.isLeaf()) {
-                itemView.expandIndicator.visibility = View.GONE
-            } else {
-                itemView.expandIndicator.visibility = View.VISIBLE
-                itemView.expandIndicator.setOnClickListener { expandCollapseToggleHandler(viewNode, this) }
-                itemView.expandIndicator.setIcon(viewNode.isExpanded)
-            }
-        }
+//        private fun bindExpandIndicator(viewNode: ViewTreeNode){
+//            if(viewNode.isLeaf()) {
+//                itemView.expandIndicator.visibility = View.GONE
+//            } else {
+//                itemView.expandIndicator.visibility = View.VISIBLE
+//                itemView.expandIndicator.setOnClickListener { expandCollapseToggleHandler(viewNode, this) }
+//                itemView.expandIndicator.setIcon(viewNode.isExpanded)
+//            }
+//        }
         private fun bindCommon(viewNode: ViewTreeNode){
             bindIndentation(viewNode)
-            bindExpandIndicator(viewNode)
+//            bindExpandIndicator(viewNode)
         }
         private fun bindCheckableText(viewNode: ViewTreeNode){
             bindCommon(viewNode)
@@ -175,8 +175,8 @@ class TreeAdapter(private val indentation: Int, private val recyclerView: Single
             itemView.checkText.setIndeterminate(viewNode.rawReference?.progress?:0>0)
 
             itemView.rightView.setOnClickListener {
-                itemOnclick(viewNode,this)
-
+//                itemOnclick(viewNode,this)//detail
+                expandCollapseToggleHandler(viewNode, this)
             }
 
             itemView.checkText.setOnCheckedChangeListener { _, isChecked ->
