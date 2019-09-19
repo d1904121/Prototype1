@@ -43,6 +43,7 @@ class SingleRecyclerViewImpl : RecyclerView,
     }
 
 
+
     fun treeToList(roots: ViewTreeNode):MutableList<ViewTreeNode>{
         val result= mutableListOf<ViewTreeNode>(roots)
         val iterator =result.listIterator()
@@ -141,6 +142,7 @@ class TreeAdapter(private val indentation: Int, private val recyclerView: Single
             notifyItemRangeRemoved(position + 1, removeCount)
         }
     }
+
     inner class ViewHolder(view: View, private val indentation: Int, recyclerView: SingleRecyclerViewImpl,val realm: Realm?)
         : RecyclerView.ViewHolder(view) {
 
@@ -212,10 +214,11 @@ class TreeAdapter(private val indentation: Int, private val recyclerView: Single
                     //get variables
                     val inputStr = itemView.editText.text.toString()
                     val viewParent=viewNode.parent as ViewTreeNode
+                    var newNode:RawTreeNode?=null
                     if(viewNode.parent!=null && realm!=null) {
                         //create new RawNode
                         realm.executeTransaction {
-                            val newNode=realm.createObject(RawTreeNode::class.java,
+                            newNode=realm.createObject(RawTreeNode::class.java,
                                 UUID.randomUUID().toString()).apply {
                                 value=realm.createObject(Node::class.java).apply {
                                     //set new node
@@ -224,14 +227,27 @@ class TreeAdapter(private val indentation: Int, private val recyclerView: Single
                                 parent=viewParent.rawReference
                             }
                             viewParent.rawReference?.children?.add((newNode))
+
+
+                            //TODO: fix flash
+                            viewParent.children.remove(viewNode)
+//                            notifyItemRemoved(adapterPosition+1)
+
+
+                            nodesList.clear()
+                            nodesList.addAll(treeToList(viewParent.getRoot()))
+                            viewNodes=nodesList
+                            notifyDataSetChanged()
+
+//                            itemView.editText.setText("")
+//                            viewParent.children.add(ViewTreeNode(newNode!!,viewParent,null))
+//                            viewParent.children.add(viewNode)
+//                            notifyItemRangeInserted(adapterPosition,2)
+//                            NodeUtils().refreshView(recyclerView, viewParent.rawReference?.getRoot())
                         }
                     }else{
                         Log.w(Tags.DEFAULT.name, "SingleRecyclerViewImpl:realm not set, or parent does not exist")
                     }
-                    viewParent.children.remove(viewNode)
-                    itemView.editText.setText("")
-                    viewParent.children.add(viewNode)
-                    NodeUtils().refreshView(recyclerView, viewParent.rawReference?.getRoot())
                 }
             }
         }

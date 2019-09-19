@@ -34,9 +34,9 @@ class MainActivity : AppCompatActivity() {
         treeView.realm=realm
 
         //デバッグ用：全データを消す
-//        realm.executeTransaction {
-//            realm.deleteAll()
-//        }
+        realm.executeTransaction {
+            realm.deleteAll()
+        }
         //木の取得と画面への反映
         var root=NodeUtils().getRoot(realm)
         NodeUtils().refreshView(treeView,root)
@@ -118,7 +118,11 @@ class MainActivity : AppCompatActivity() {
             seed.upload()
         }
 
-
+        deleteBtn.setOnClickListener {
+            realm.executeTransaction {
+                realm.deleteAll()
+            }
+        }
 
     }
 

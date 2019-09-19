@@ -44,11 +44,11 @@
     <com.example.prototype1.checkabletreeview.views.SingleRecyclerViewImpl
             android:id="@+id/treeView"
             android:layout_width="361dp"
-            android:layout_height="509dp"
+            android:layout_height="0dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" android:layout_marginTop="8dp"
             app:layout_constraintTop_toBottomOf="@+id/testText"
-            android:layout_marginBottom="8dp" app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="200dp" app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintVertical_bias="0.0"/>
     <Button
             android:text="Tree"
@@ -64,4 +64,11 @@
             android:id="@+id/testText" app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="16dp" app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="12dp"/>
+    <Button
+            android:text="delete-all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/deleteBtn" android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/treeView" app:layout_constraintStart_toEndOf="@+id/treeBtn"
+            android:layout_marginStart="8dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
