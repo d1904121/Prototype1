@@ -75,7 +75,7 @@ class SingleRecyclerViewImpl : RecyclerView,
 }
 
 class TreeAdapter(private val indentation: Int, private val recyclerView: SingleRecyclerViewImpl) : RecyclerView.Adapter<TreeAdapter.ViewHolder>() {
-    internal var viewNodes: MutableList<ViewTreeNode> = mutableListOf()
+    var viewNodes: MutableList<ViewTreeNode> = mutableListOf()
     private val expandCollapseToggleHandler: (ViewTreeNode, ViewHolder) -> Unit = { node, viewHolder ->
         if(node.isExpanded) {
             collapse(viewHolder.adapterPosition)
@@ -233,10 +233,7 @@ class TreeAdapter(private val indentation: Int, private val recyclerView: Single
                             viewParent.children.remove(viewNode)
 //                            notifyItemRemoved(adapterPosition+1)
 
-
-                            nodesList.clear()
-                            nodesList.addAll(treeToList(viewParent.getRoot()))
-                            viewNodes=nodesList
+                            recyclerView.adapter
                             notifyDataSetChanged()
 
 //                            itemView.editText.setText("")
