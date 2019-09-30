@@ -46,5 +46,6 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.1.0-beta04'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation "io.reactivex.rxjava2:rxjava:2.2.12"
-//    implementation "io.reactivex.rxjava3:rxjava:3.0.0-RC3"
+
+    implementation 'com.github.WangcWj:WeSwipe:1.0.1'
 }

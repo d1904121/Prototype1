@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.annotation.UiThread
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import cn.we.swipe.helper.WeSwipeHelper
 import com.example.prototype1.Tags
 import com.example.prototype1.models.NodeValue
 import com.example.prototype1.models.RawTreeNode
@@ -19,8 +20,11 @@ import com.example.prototype1.treeview.utils.px
 import io.realm.Realm
 import kotlinx.android.synthetic.main.item_checkable_text.view.*
 import kotlinx.android.synthetic.main.item_checkable_text.view.indentation
+import kotlinx.android.synthetic.main.item_checkable_text.view.slide
 import kotlinx.android.synthetic.main.item_quick_create_node.view.*
 import java.util.*
+
+
 
 private const val TAG = "SingleRecyclerView"
 class SingleRecyclerViewImpl : RecyclerView,
@@ -147,7 +151,24 @@ class TreeAdapter(private val indentation: Int, private val recyclerView: Single
     }
 
     inner class ViewHolder(view: View, private val indentation: Int, recyclerView: SingleRecyclerViewImpl,val realm: Realm?)
-        : RecyclerView.ViewHolder(view) {
+        : RecyclerView.ViewHolder(view), WeSwipeHelper.SwipeLayoutTypeCallBack {
+//        : RecyclerView.ViewHolder(view) {
+        //for slide
+
+
+        override fun getSwipeWidth(): Float {
+            return itemView.slide.width.toFloat()
+        }
+
+        override fun needSwipeLayout(): View {
+            return itemView.itemLinearLayout
+        }
+
+        override fun onScreenView(): View {
+            return itemView.itemLinearLayout
+        }
+
+
 
         private fun bindIndentation(viewNode: ViewTreeNode){
             itemView.indentation.minimumWidth = indentation * viewNode.getLevel()
@@ -186,7 +207,7 @@ class TreeAdapter(private val indentation: Int, private val recyclerView: Single
             itemView.checkText.setOnCheckedChangeListener { _, isChecked ->
 
 
-
+        //set children
 //                if (realm != null) {
 //                    AppUtils().executeTransactionIfNotInTransaction(realm){
 //                        if(viewNode.rawReference?.progress?:0>0){

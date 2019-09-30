@@ -3,12 +3,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import cn.we.swipe.helper.WeSwipe
 import com.example.prototype1.VariableNames
-import com.example.prototype1.treeview.models.ViewNodeTypes
-import com.example.prototype1.treeview.views.SingleRecyclerViewImpl
 import com.example.prototype1.models.NodeValue
 import com.example.prototype1.models.RawTreeNode
 import com.example.prototype1.models.TreeSeedNode
+import com.example.prototype1.treeview.models.ViewNodeTypes
+import com.example.prototype1.treeview.views.SingleRecyclerViewImpl
 import com.example.prototype1.utils.AppUtils
 import com.example.prototype1.utils.NodeUtils
 import com.example.prototype1.utils.UserUtils
@@ -145,6 +146,8 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
+        WeSwipe.attach(treeView)
 
     }
 
