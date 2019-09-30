@@ -10,12 +10,12 @@ import androidx.annotation.UiThread
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.prototype1.Tags
+import com.example.prototype1.models.NodeValue
+import com.example.prototype1.models.RawTreeNode
 import com.example.prototype1.treeview.models.ViewNodeTypes
 import com.example.prototype1.treeview.models.ViewNodeUtils
 import com.example.prototype1.treeview.models.ViewTreeNode
 import com.example.prototype1.treeview.utils.px
-import com.example.prototype1.models.NodeValue
-import com.example.prototype1.models.RawTreeNode
 import io.realm.Realm
 import kotlinx.android.synthetic.main.item_checkable_text.view.*
 import kotlinx.android.synthetic.main.item_checkable_text.view.indentation
@@ -176,6 +176,11 @@ class TreeAdapter(private val indentation: Int, private val recyclerView: Single
             itemView.rightView.setOnClickListener {
 //                itemOnclick(viewNode,this)//detail
                 expandCollapseToggleHandler(viewNode, this)
+            }
+
+            itemView.rightView.setOnLongClickListener {
+                itemOnclick(viewNode,this)//detail
+                true//end this click
             }
 
             itemView.checkText.setOnCheckedChangeListener { _, isChecked ->
