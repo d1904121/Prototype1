@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.prototype1.VariableNames
-import com.example.prototype1.checkabletreeview.models.ViewNodeTypes
-import com.example.prototype1.checkabletreeview.views.SingleRecyclerViewImpl
+import com.example.prototype1.treeview.models.ViewNodeTypes
+import com.example.prototype1.treeview.views.SingleRecyclerViewImpl
 import com.example.prototype1.models.Node
 import com.example.prototype1.models.RawTreeNode
 import com.example.prototype1.models.TreeSeedNode
@@ -37,9 +37,9 @@ class MainActivity : AppCompatActivity() {
         treeView.realm=realm
 
         //デバッグ用：全データを消す
-        realm.executeTransaction {
-            realm.deleteAll()
-        }
+//        realm.executeTransaction {
+//            realm.deleteAll()
+//        }
         //木の取得と画面への反映
         var root=NodeUtils().getRoot(realm)
         NodeUtils().refreshView(treeView,root)

@@ -1,7 +1,7 @@
 package com.example.prototype1.models
 import com.example.prototype1.NodeTypes
-import com.example.prototype1.checkabletreeview.models.NodeDetailMap
-import com.example.prototype1.checkabletreeview.views.Checkable
+import com.example.prototype1.treeview.models.NodeDetailMap
+import com.example.prototype1.treeview.views.Checkable
 import com.google.gson.annotations.Expose
 import io.realm.RealmObject
 import io.realm.annotations.RealmModule

@@ -15,7 +15,7 @@
     <FrameLayout
             android:layout_height="wrap_content"
             android:layout_weight="1" android:layout_width="0dp">
-        <com.example.prototype1.checkabletreeview.views.CheckBoxEx
+        <com.example.prototype1.treeview.views.CheckBoxEx
                 android:id="@+id/checkText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
               android:id="@+id/rightView"/>
     </FrameLayout>
 
-    <!--<com.example.prototype1.checkabletreeview.views.ExpandToggleButton-->
+    <!--<com.example.prototype1.treeview.views.ExpandToggleButton-->
         <!--android:id="@+id/expandIndicator"-->
         <!--android:layout_width="wrap_content"-->
         <!--android:layout_height="wrap_content"-->

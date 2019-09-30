@@ -1,9 +1,9 @@
 package com.example.prototype1.utils
 
-import com.example.prototype1.checkabletreeview.models.NodeDetailMap
-import com.example.prototype1.checkabletreeview.models.ViewTreeNode
-import com.example.prototype1.checkabletreeview.views.SingleRecyclerViewImpl
-import com.example.prototype1.checkabletreeview.views.TreeAdapter
+import com.example.prototype1.treeview.models.NodeDetailMap
+import com.example.prototype1.treeview.models.ViewTreeNode
+import com.example.prototype1.treeview.views.SingleRecyclerViewImpl
+import com.example.prototype1.treeview.views.TreeAdapter
 import com.example.prototype1.models.Node
 import com.example.prototype1.models.RawTreeNode
 import io.realm.Realm

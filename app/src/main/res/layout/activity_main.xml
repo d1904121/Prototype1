@@ -41,7 +41,7 @@
             android:id="@+id/seedBtn" app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="20dp" app:layout_constraintTop_toBottomOf="@+id/treeView"
             app:layout_constraintStart_toStartOf="parent" app:layout_constraintHorizontal_bias="0.996"/>
-    <com.example.prototype1.checkabletreeview.views.SingleRecyclerViewImpl
+    <com.example.prototype1.treeview.views.SingleRecyclerViewImpl
             android:id="@+id/treeView"
             android:layout_width="361dp"
             android:layout_height="0dp"
