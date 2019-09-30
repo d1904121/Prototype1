@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import cn.we.swipe.helper.WeSwipe
+import com.example.prototype1.NodeTypes
 import com.example.prototype1.VariableNames
 import com.example.prototype1.models.NodeValue
 import com.example.prototype1.models.RawTreeNode
@@ -52,11 +53,21 @@ class MainActivity : AppCompatActivity() {
             // AppUtils().executeTransactionIfNotInTransaction(realm){...}
             // を使ってください
 
+//            realm.executeTransaction {
+//                root.value!!.str="root2"
+//                root.children.add(RawTreeNode(NodeValue("l21")).apply {
+//                    children.add(RawTreeNode(NodeValue("xxx")))
+//                })
+//            }
+//            //画面への反映を忘れずに
+//            NodeUtils().refreshView(treeView,root)
+
+
+
             realm.executeTransaction {
-                root.value!!.str="root2"
-                root.children.add(RawTreeNode(NodeValue("l21")).apply {
-                    children.add(RawTreeNode(NodeValue("xxx")))
-                })
+                root.children.add(RawTreeNode(NodeValue("l21").apply {
+                    type=NodeTypes.PROGRESS_NODE.name
+                }))
             }
             //画面への反映を忘れずに
             NodeUtils().refreshView(treeView,root)

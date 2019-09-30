@@ -20,7 +20,9 @@ import com.example.prototype1.treeview.utils.px
 import io.realm.Realm
 import kotlinx.android.synthetic.main.item_checkable_text.view.*
 import kotlinx.android.synthetic.main.item_checkable_text.view.indentation
+import kotlinx.android.synthetic.main.item_checkable_text.view.itemLinearLayout
 import kotlinx.android.synthetic.main.item_checkable_text.view.slide
+import kotlinx.android.synthetic.main.item_progress.view.*
 import kotlinx.android.synthetic.main.item_quick_create_node.view.*
 import java.util.*
 
@@ -278,10 +280,25 @@ class TreeAdapter(private val indentation: Int, private val recyclerView: Single
                 }
             }
         }
+        private fun bindProgressNode(viewNode: ViewTreeNode){
+            bindCommon(viewNode)
+
+            itemView.progressNodeText.text=viewNode.value.toString()
+
+            itemView.progressNodeText.setOnClickListener {
+                expandCollapseToggleHandler(viewNode, this)
+            }
+
+            itemView.progressNodeText.setOnLongClickListener {
+                itemOnclick(viewNode,this)//detail
+                true//end this click
+            }
+        }
         //TODO: create your bind function here, do not forget setOnClickListener
         internal fun bind(viewNode: ViewTreeNode) {
             when(viewNode.type){
                 ViewNodeTypes.QUICK_CREATE_NODE -> bindQuickCreateNode(viewNode)
+                ViewNodeTypes.PROGRESS_NODE->bindProgressNode(viewNode)
                 else -> bindCheckableText(viewNode)
             }
         }

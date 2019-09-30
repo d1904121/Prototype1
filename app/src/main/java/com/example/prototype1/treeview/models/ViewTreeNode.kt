@@ -1,11 +1,12 @@
 package com.example.prototype1.treeview.models
 
+import com.example.prototype1.NodeTypes
+import com.example.prototype1.models.NodeValue
+import com.example.prototype1.models.RawTreeNode
 import com.example.prototype1.treeview.utils.IdGenerator
 import com.example.prototype1.treeview.views.Expandable
 import com.example.prototype1.treeview.views.HasId
 import com.example.prototype1.treeview.views.NodeCheckedStatus
-import com.example.prototype1.models.NodeValue
-import com.example.prototype1.models.RawTreeNode
 import com.example.prototype1.utils.AppUtils
 import com.google.gson.annotations.Expose
 import io.realm.Realm
@@ -34,6 +35,10 @@ class ViewTreeNode(
         this.isExpanded=(before!=null && before.isExpanded)
         this.value=raw.value!!
         this.children.clear()
+        this.type=when(value.type){
+            NodeTypes.PROGRESS_NODE.name->ViewNodeTypes.PROGRESS_NODE
+            else->ViewNodeTypes.NODE
+        }
         //TODO: delete
         this.rawReference=raw
         raw.children.forEach {
