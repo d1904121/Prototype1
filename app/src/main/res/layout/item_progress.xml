@@ -7,7 +7,7 @@
         android:layout_margin="16dp">
     <TextView android:layout_width="50dp"
               android:layout_height="wrap_content"
-              android:id="@+id/slide"
+              android:id="@+id/slideDelete"
               android:text="delete"
               android:layout_alignParentEnd="true"
               android:gravity="center"

@@ -28,7 +28,7 @@
 
     <TextView android:layout_width="0dp"
               android:layout_height="wrap_content"
-              android:id="@+id/slide"
+              android:id="@+id/slideDelete"
               android:text=""
               android:gravity="center"
               android:background="@android:color/holo_red_dark" android:height="24dp"/>

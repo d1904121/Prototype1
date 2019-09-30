@@ -17,11 +17,13 @@ import com.example.prototype1.treeview.models.ViewNodeTypes
 import com.example.prototype1.treeview.models.ViewNodeUtils
 import com.example.prototype1.treeview.models.ViewTreeNode
 import com.example.prototype1.treeview.utils.px
+import com.example.prototype1.utils.AppUtils
+import com.example.prototype1.utils.NodeUtils
 import io.realm.Realm
 import kotlinx.android.synthetic.main.item_checkable_text.view.*
 import kotlinx.android.synthetic.main.item_checkable_text.view.indentation
 import kotlinx.android.synthetic.main.item_checkable_text.view.itemLinearLayout
-import kotlinx.android.synthetic.main.item_checkable_text.view.slide
+import kotlinx.android.synthetic.main.item_checkable_text.view.slideDelete
 import kotlinx.android.synthetic.main.item_progress.view.*
 import kotlinx.android.synthetic.main.item_quick_create_node.view.*
 import java.util.*
@@ -159,7 +161,7 @@ class TreeAdapter(private val indentation: Int, private val recyclerView: Single
 
 
         override fun getSwipeWidth(): Float {
-            return itemView.slide.width.toFloat()
+            return itemView.slideDelete.width.toFloat()
         }
 
         override fun needSwipeLayout(): View {
@@ -184,9 +186,33 @@ class TreeAdapter(private val indentation: Int, private val recyclerView: Single
 //                itemView.expandIndicator.setIcon(viewNode.isExpanded)
 //            }
 //        }
+
+        private fun bindDelete(viewNode: ViewTreeNode){
+            itemView.slideDelete.setOnClickListener {
+                if(realm!=null){
+//                    val expandedChildrenNum=viewNode.children.toList().filter {
+//                        it.isExpanded
+//                    }.size
+//                    viewNode.deleteRaw(realm)
+//                    notifyItemRangeRemoved(adapterPosition+1,1+expandedChildrenNum)
+
+                    //TODO:delete from realm, fix flash bug
+                    if(viewNode.rawReference!!.parent!=null){
+                        AppUtils().executeTransactionIfNotInTransaction(realm){
+                            viewNode.rawReference!!.parent!!.children.remove(viewNode.rawReference)
+                        }
+                        viewNode.parent!!.children.remove(viewNode)
+                    }
+                    NodeUtils().refreshView(recyclerView,viewNode.getRoot().rawReference)
+                }else{
+                    //TODO:err msg
+                }
+            }
+        }
+
         private fun bindCommon(viewNode: ViewTreeNode){
             bindIndentation(viewNode)
-//            bindExpandIndicator(viewNode)
+            bindDelete(viewNode)
         }
         private fun bindCheckableText(viewNode: ViewTreeNode){
             bindCommon(viewNode)

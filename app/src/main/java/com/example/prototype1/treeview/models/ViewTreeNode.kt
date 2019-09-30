@@ -110,4 +110,24 @@ class ViewTreeNode(
         while(result.parent!=null)result= result.parent!!
         return result
     }
+//    fun deleteRaw(realm: Realm){
+//        if(parent!=null){
+//            children.filter { type==ViewNodeTypes.QUICK_CREATE_NODE }.forEach {
+//                it.deleteRaw(realm)
+//            }
+//            parent!!.children.remove(this)
+//            AppUtils().executeTransactionIfNotInTransaction(realm){
+//                rawReference!!.parent!!.children.remove(rawReference)
+////                realm.where(RawTreeNode::class.java).equalTo("uuid",rawReference!!.uuid)
+////                    .findAllAsync().deleteAllFromRealm()
+//            }
+//        }
+//    }
+    fun toList():MutableList<ViewTreeNode>{
+        var result= mutableListOf(this)
+        children.forEach {
+            result.addAll(it.toList())
+        }
+        return result
+    }
 }
