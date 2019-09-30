@@ -9,12 +9,12 @@ import com.google.gson.annotations.Expose
 import java.util.*
 
 class TreeSeedNode(
-    @Expose var value: Node,
+    @Expose var value: NodeValue,
     @Expose var children:MutableList<TreeSeedNode>,
     @Expose var parent: TreeSeedNode?,
     @Expose var uuid:String= UUID.randomUUID().toString()
 ) {
-    constructor():this(Node(""), mutableListOf<TreeSeedNode>(),null)
+    constructor():this(NodeValue(""), mutableListOf<TreeSeedNode>(),null)
     constructor(raw: RawTreeNode,parent: TreeSeedNode?):this(){
         this.value=raw.value!!
         this.parent=parent
@@ -26,8 +26,8 @@ class TreeSeedNode(
 
     constructor(seed:SeedNodeForFirebase,parent: TreeSeedNode?):this() {
 
-        this.value = Node(
-            seed.value.str, seed.value.type, seed.value.notice, seed.value.sharedId, seed.value.mediaUri,
+        this.value = NodeValue(
+            seed.value.str, seed.value.type, seed.value.mediaUri,
             null, seed.value.link, seed.value.power, seed.value.uuid,seed.value.checked
         )
         seed.value.detail?.forEach { (key, value) ->
@@ -44,8 +44,6 @@ class TreeSeedNode(
     data class SeedValueForFirebase(
         var str: String="",
         var type:String= NodeTypes.NODE.name,
-        var notice: Date?=null,
-        var sharedId:String?=null,
         var mediaUri:String?=null,
         var detail: MutableMap<String,String?>?= mutableMapOf(),
         var link:String?=null,
@@ -54,19 +52,17 @@ class TreeSeedNode(
         var checked: Boolean=false
     ){
         constructor():this("")
-        constructor(node:Node):this(){
-            this.str=node.str
-            this.type=node.type
-            this.notice=node.notice
-            this.sharedId=node.sharedId
-            this.mediaUri=node.mediaUri
-            node.detail?.list?.forEach {
+        constructor(nodeValue:NodeValue):this(){
+            this.str=nodeValue.str
+            this.type=nodeValue.type
+            this.mediaUri=nodeValue.mediaUri
+            nodeValue.detail?.list?.forEach {
                 this.detail?.set(it.key,it.value)
             }
-            this.link=node.link
-            this.power=node.power
-            this.checked=node.checked
-            this.uuid=node.uuid
+            this.link=nodeValue.link
+            this.power=nodeValue.power
+            this.checked=nodeValue.checked
+            this.uuid=nodeValue.uuid
         }
     }
     data class SeedNodeForFirebase(

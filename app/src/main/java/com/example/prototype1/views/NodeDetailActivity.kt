@@ -28,8 +28,8 @@ class NodeDetailActivity : AppCompatActivity() {
             titleText.text=value!!.str
             detailText.text=""
             detailText.append("type=${value.type}\n")
-            detailText.append("notice=${value.notice}\n")
-            detailText.append("sharedId=${value.sharedId}\n")
+            detailText.append("notice=${node!!.notice}\n")
+            detailText.append("sharedId=${node!!.sharedId}\n")
             detailText.append("mediaUri=${value.mediaUri}\n")
             detailText.append("detail=${value.detail}\n")
             detailText.append("link=${value.link}\n")

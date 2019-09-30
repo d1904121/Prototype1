@@ -8,11 +8,9 @@ import io.realm.annotations.RealmModule
 import java.util.*
 
 @RealmModule(allClasses = true)
-open class Node(
+open class NodeValue(
     @Expose open var str: String="",
     @Expose open var type:String= NodeTypes.NODE.name,
-    @Expose open var notice: Date?=null,
-    @Expose open var sharedId:String?=null,
     @Expose open var mediaUri:String?=null,
     @Expose open var detail: NodeDetailMap?=null,
     @Expose open var link:String?=null,

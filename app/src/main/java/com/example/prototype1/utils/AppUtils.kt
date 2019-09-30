@@ -8,7 +8,7 @@ import com.google.gson.GsonBuilder
 import io.realm.Realm
 import io.realm.RealmConfiguration
 
-class AppUtils(){
+class AppUtils {
     fun setSetting(activity: AppCompatActivity,key:String,value:String){
         val pref= PreferenceManager.getDefaultSharedPreferences(activity)
         pref.edit{

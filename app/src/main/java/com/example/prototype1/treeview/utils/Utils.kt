@@ -1,7 +1,7 @@
 package com.example.prototype1.treeview.utils
 import android.os.SystemClock
 import com.example.prototype1.treeview.models.ViewTreeNode
-import com.example.prototype1.models.Node
+import com.example.prototype1.models.NodeValue
 
 object IdGenerator {
 
@@ -19,24 +19,24 @@ object TreeNodeFactory {
 
     fun buildTestTree(): ViewTreeNode {
         val root =
-            ViewTreeNode(Node("root"))
+            ViewTreeNode(NodeValue("root"))
         val left = ViewTreeNode(
-            Node("left"),
+            NodeValue("left"),
             root
         ).apply {
             children=mutableListOf(
                 ViewTreeNode(
-                    Node("level3left"),
+                    NodeValue("level3left"),
                     this
                 ),
                 ViewTreeNode(
-                    Node("level3right"),
+                    NodeValue("level3right"),
                     this
                 )
             )
         }
         val right = ViewTreeNode(
-            Node("right"),
+            NodeValue("right"),
             root
         )
 

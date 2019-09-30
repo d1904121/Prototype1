@@ -14,7 +14,7 @@ import com.example.prototype1.treeview.models.ViewNodeTypes
 import com.example.prototype1.treeview.models.ViewNodeUtils
 import com.example.prototype1.treeview.models.ViewTreeNode
 import com.example.prototype1.treeview.utils.px
-import com.example.prototype1.models.Node
+import com.example.prototype1.models.NodeValue
 import com.example.prototype1.models.RawTreeNode
 import io.realm.Realm
 import kotlinx.android.synthetic.main.item_checkable_text.view.*
@@ -24,7 +24,7 @@ import java.util.*
 
 private const val TAG = "SingleRecyclerView"
 class SingleRecyclerViewImpl : RecyclerView,
-    TreeView<Node> {
+    TreeView<NodeValue> {
     private val adapter: TreeAdapter by lazy {
         val indentation = indentation.px
         TreeAdapter(
@@ -44,7 +44,7 @@ class SingleRecyclerViewImpl : RecyclerView,
 
 
     fun treeToList(roots: ViewTreeNode):MutableList<ViewTreeNode>{
-        val result= mutableListOf<ViewTreeNode>(roots)
+        val result= mutableListOf(roots)
         val iterator =result.listIterator()
         for(item in iterator){
             if(item.isExpanded){
@@ -227,7 +227,7 @@ class TreeAdapter(private val indentation: Int, private val recyclerView: Single
                         realm.executeTransaction {
                             newNode=realm.createObject(RawTreeNode::class.java,
                                 UUID.randomUUID().toString()).apply {
-                                value=realm.createObject(Node::class.java).apply {
+                                value=realm.createObject(NodeValue::class.java).apply {
                                     //set new node
                                     str=inputStr
                                 }

@@ -4,14 +4,14 @@ import com.example.prototype1.treeview.utils.IdGenerator
 import com.example.prototype1.treeview.views.Expandable
 import com.example.prototype1.treeview.views.HasId
 import com.example.prototype1.treeview.views.NodeCheckedStatus
-import com.example.prototype1.models.Node
+import com.example.prototype1.models.NodeValue
 import com.example.prototype1.models.RawTreeNode
 import com.example.prototype1.utils.AppUtils
 import com.google.gson.annotations.Expose
 import io.realm.Realm
 
 class ViewTreeNode(
-    @Expose var value: Node,
+    @Expose var value: NodeValue,
     var type:ViewNodeTypes=ViewNodeTypes.NODE,
     var parent: ViewTreeNode?,
     @Expose var children: MutableList<ViewTreeNode>,
@@ -22,14 +22,14 @@ class ViewTreeNode(
         IdGenerator.generate()
     }
     // constructor for root node
-    constructor(value: Node) : this(value,ViewNodeTypes.NODE, null,  mutableListOf<ViewTreeNode>())
+    constructor(value: NodeValue) : this(value,ViewNodeTypes.NODE, null,  mutableListOf<ViewTreeNode>())
     // constructor for leaf node
-    constructor(value: Node, parent: ViewTreeNode) : this(value,ViewNodeTypes.NODE, parent,  mutableListOf<ViewTreeNode>())
+    constructor(value: NodeValue, parent: ViewTreeNode) : this(value,ViewNodeTypes.NODE, parent,  mutableListOf<ViewTreeNode>())
     // constructor for parent node
-    constructor(value: Node, children: MutableList<ViewTreeNode>) : this(value,ViewNodeTypes.NODE, null, children)
+    constructor(value: NodeValue, children: MutableList<ViewTreeNode>) : this(value,ViewNodeTypes.NODE, null, children)
 
     constructor(raw:RawTreeNode,parent:ViewTreeNode?=null,
-                before:ViewTreeNode?=null):this(Node()){
+                before:ViewTreeNode?=null):this(NodeValue()){
         this.parent=parent
         this.isExpanded=(before!=null && before.isExpanded)
         this.value=raw.value!!
@@ -42,7 +42,7 @@ class ViewTreeNode(
             }
             this.children.add(ViewTreeNode(it,this,childBefore))
         }
-        this.children.add(ViewTreeNode(Node(checked = true),ViewNodeTypes.QUICK_CREATE_NODE,this, mutableListOf()))
+        this.children.add(ViewTreeNode(NodeValue(checked = true),ViewNodeTypes.QUICK_CREATE_NODE,this, mutableListOf()))
     }
 
     fun isTop(): Boolean {
@@ -85,14 +85,14 @@ class ViewTreeNode(
         }
         return NodeCheckedStatus(hasChildChecked, allChildrenChecked)
     }
-    fun getAggregatedValues(): List<Node> {
+    fun getAggregatedValues(): List<NodeValue> {
         return if (isLeaf()) {
             if (value.checked) listOf(value) else emptyList()
         } else {
             if (getCheckedStatus().allChildrenChecked) {
                 listOf(value)
             } else {
-                val result = mutableListOf<Node>()
+                val result = mutableListOf<NodeValue>()
                 children.forEach {
                     result.addAll(it.getAggregatedValues())
                 }

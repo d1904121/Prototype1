@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.prototype1.VariableNames
 import com.example.prototype1.treeview.models.ViewNodeTypes
 import com.example.prototype1.treeview.views.SingleRecyclerViewImpl
-import com.example.prototype1.models.Node
+import com.example.prototype1.models.NodeValue
 import com.example.prototype1.models.RawTreeNode
 import com.example.prototype1.models.TreeSeedNode
 import com.example.prototype1.utils.AppUtils
@@ -53,8 +53,8 @@ class MainActivity : AppCompatActivity() {
 
             realm.executeTransaction {
                 root.value!!.str="root2"
-                root.children.add(RawTreeNode(Node("l21")).apply {
-                    children.add(RawTreeNode(Node("xxx")))
+                root.children.add(RawTreeNode(NodeValue("l21")).apply {
+                    children.add(RawTreeNode(NodeValue("xxx")))
                 })
             }
             //画面への反映を忘れずに
